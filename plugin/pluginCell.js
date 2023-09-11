@@ -1,6 +1,7 @@
 import { OuterbasePluginConfig_$PLUGIN_ID } from "./pluginConfig"
 import { templateCell_$PLUGIN_ID } from "./template/templateCell"
 import { PRIVILEGES } from './constants/privileges'
+import { S3_BUTTON_UPLOAD_ID, S3_FILE_INPUT_ID, S3_NOTHING_UPLOADED_ID, S3_SOMETHING_UPLOADED_ID } from "./constants/ids"
 
 export class OuterbasePluginCell_$PLUGIN_ID extends HTMLElement {
     static get observedAttributes() {
@@ -28,17 +29,26 @@ export class OuterbasePluginCell_$PLUGIN_ID extends HTMLElement {
         this.config = new OuterbasePluginConfig_$PLUGIN_ID(
             JSON.parse(this.getAttribute('configuration'))
         )
+        
 
-        // Set default value based on input
-        this.shadow.querySelector('#image-value').value = this.getAttribute('cellvalue')
-
-        var imageInput = this.shadow.getElementById("image-value");
-        var viewImageButton = this.shadow.getElementById("view-image");
-
-        if (imageInput && viewImageButton) {
-            imageInput.addEventListener("focus", () => {
+        // Doing this will throw an error. You cannot set .value from a script
+        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#notes 
+        // this.shadow.querySelector(`#${S3_FILE_INPUT_ID}`).value = this.getAttribute('cellvalue')
+        var fileInput = this.shadow.getElementById(S3_FILE_INPUT_ID);
+        var uploadFileButton = this.shadow.getElementById(S3_BUTTON_UPLOAD_ID);
+        const somethingIsAlreadyUploaded = this.getAttribute('cellvalue') === "undefined"
+        if (somethingIsAlreadyUploaded) {
+            this.shadow.getElementById(S3_NOTHING_UPLOADED_ID).style.display = "none"
+            this.shadow.getElementById(S3_SOMETHING_UPLOADED_ID).style.display = "block"
+        } else {
+            this.shadow.getElementById(S3_NOTHING_UPLOADED_ID).style.display = "block"
+            this.shadow.getElementById(S3_SOMETHING_UPLOADED_ID).style.display = "none"
+        }
+        const somethingIsInTheCell = fileInput && uploadFileButton
+        if (somethingIsInTheCell) {
+            fileInput.addEventListener("focus", () => {
+                console.log('Focusing')
                 // Tell Outerbase to start editing the cell
-                console.log('onstopedit 1')
                 // this.setAttribute('onstopedit', true)
                 this.callCustomEvent({
                     action: 'onstopedit',
@@ -46,12 +56,12 @@ export class OuterbasePluginCell_$PLUGIN_ID extends HTMLElement {
                 })
             });
 
-            imageInput.addEventListener("blur", () => {
+            fileInput.addEventListener("blur", () => {
                 // Tell Outerbase to update the cells raw value
                 // this.setAttribute('cellvalue', imageInput.value)
                 this.callCustomEvent({
                     action: 'cellvalue',
-                    value: imageInput.value
+                    value: fileInput.value
                 })
 
                 // Then stop editing the cell and close the editor view
@@ -63,7 +73,7 @@ export class OuterbasePluginCell_$PLUGIN_ID extends HTMLElement {
                 })
             });
 
-            viewImageButton.addEventListener("click", () => {
+            uploadFileButton.addEventListener("click", () => {
                 // console.log('onedit')
                 // this.setAttribute('onedit', true)
                 this.callCustomEvent({

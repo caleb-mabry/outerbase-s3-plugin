@@ -1,35 +1,23 @@
-var templateCell_$PLUGIN_ID = document.createElement('template')
+const { S3_BUTTON_UPLOAD_ID, S3_FILE_INPUT_ID, S3_NOTHING_UPLOADED_ID, S3_SOMETHING_UPLOADED_ID } = require("../constants/ids")
+
+const CONTAINER_NAME = "container"
+
+const templateCell_$PLUGIN_ID = document.createElement('template')
 templateCell_$PLUGIN_ID.innerHTML = `
 <style>
-    #container { 
+    #${CONTAINER_NAME} { 
         display: flex;
-        align-items: center;
-        gap: 8px;
-        justify-content: space-between;
-        height: 100%;
-        width: calc(100% - 16px);
-        padding: 0 8px;
-    }
-
-    input {
-        height: 100%;
-        flex: 1;
-        background-color: transparent;
-        border: 0;
-        min-width: 0;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
-
-    input:focus {
-        outline: none;
     }
 </style>
 
-<div id="container">
-    <input type="text" id="image-value" placeholder="Enter URL...">
-    <button id="view-image">View</button>
+<div id="${CONTAINER_NAME}">
+    <div id="${S3_NOTHING_UPLOADED_ID}">
+        <input type="file" id="${S3_FILE_INPUT_ID}">
+        <button id="${S3_BUTTON_UPLOAD_ID}">Upload To S3</button>
+    </div>
+    <div id="${S3_SOMETHING_UPLOADED_ID}">
+        Upload a New File
+    </div>
 </div>
 `
 module.exports = { templateCell_$PLUGIN_ID }
