@@ -1,6 +1,7 @@
 import { OuterbasePluginConfig_$PLUGIN_ID } from "./pluginConfig"
 import { templateEditor_$PLUGIN_ID } from "./template/templateEditor"
 import { PRIVILEGES } from './constants/privileges'
+import { S3_FILE_INPUT_ID } from "./constants/ids"
 
 export class OuterbasePluginEditor_$PLUGIN_ID extends HTMLElement {
     static get observedAttributes() {
@@ -27,12 +28,13 @@ export class OuterbasePluginEditor_$PLUGIN_ID extends HTMLElement {
     // logic that you want to run when the element is first stood up here, such as
     // event listeners, default values to display, etc.
     connectedCallback() {
-        var imageView = this.shadow.getElementById("image");
-        var backgroundImageView = this.shadow.getElementById("background-image");
+        console.log('Uploading ', this.getAttribute('cellvalue'))
+        // var imageView = this.shadow.getElementById("image");
+        // var backgroundImageView = this.shadow.getElementById("background-image");
 
-        if (imageView && backgroundImageView) {
-            imageView.src = this.getAttribute('cellvalue')
-            backgroundImageView.style.backgroundImage = `url(${this.getAttribute('cellvalue')})`
-        }
+        // if (imageView && backgroundImageView) {
+        //     imageView.src = this.getAttribute('cellvalue')
+        //     backgroundImageView.style.backgroundImage = `url(${this.getAttribute('cellvalue')})`
+        // }
     }
 }
